@@ -99,7 +99,7 @@ def correct_text_generic(text):
     return re.sub('[a-zA-Z]+', correct_match, text)
 
 
-def detect_En(line_num,text):
+def detect_En(line_num,text,fname):
     if text is None:
         return
     original_word_list =re.findall("[a-zA-Z]+",text)
@@ -108,7 +108,7 @@ def detect_En(line_num,text):
         if original_word == correct_word:
             continue
         else:
-            with open('CorrectWord.txt', 'a+', encoding='utf-8') as f:
+            with open('%s.txt'%fname, 'a+', encoding='utf-8') as f:
                 tplt = "{:<8}\t{:<17}\t{:<15}\n"
                 f.write(tplt.format(line_num, original_word, correct_word))
                 #f.write(tplt.format('第%d行 Orginial word: %s\t Correct word: %s\n' % (line_num, original_word, correct_word)))
@@ -116,7 +116,7 @@ def detect_En(line_num,text):
         #print('第%d行 Orginial word: %s\t Correct word: %s'%(line_num, original_word, correct_word))
 
 #定位注释位置
-def count(file):
+def count(file,fname):
     dic = {}
     flag = 0 #标志位
     total = 0 #总行数
@@ -135,7 +135,7 @@ def count(file):
             res = re.search("\/\/.*",li) #判断//
             if res:
                 dic[total] = res.group()
-                detect_En(total,res.group())
+                detect_En(total,res.group(),fname)
                 #print(res.group())
                 #print(1)
                 countPound += 1
@@ -143,14 +143,14 @@ def count(file):
                 res = re.search("\/\*.*",li)  #判断开始/*
                 if res:
                     dic[total] = res.group()
-                    detect_En(total,res.group())
+                    detect_En(total,res.group(),fname)
                     #print(res.group())
                     countPound += 1
                     flag = 1
             
         else:
             dic[total] = li
-            detect_En(total,li)
+            detect_En(total,li,fname)
             #print(li)
             countPound += 1
             res = re.search(".*\*\/$",li)   #判断结束位*/
