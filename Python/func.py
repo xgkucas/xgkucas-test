@@ -1,4 +1,4 @@
-import re, collections
+import re, collections,os
 
 def tokens(text):
     """
@@ -122,6 +122,12 @@ def count(file,fname):
     total = 0 #总行数
     countPound = 0 #注释行数
     countBlank = 0 #空行数
+    if(os.path.isfile('%s.txt'%fname)):
+        #os.remove() function to remove the file
+        os.remove('%s.txt'%fname)
+    with open('%s.txt'%fname, 'a+', encoding='utf-8') as f:
+        tplt = "{:<8}\t{:<13}\t{:<15}\n"
+        f.write(tplt.format('行','原单词', '改正后'))
     line = open(file,'r',encoding='utf-8') #打开文件，因为注释有中文所以使用utf-8编码打开
     for li in line.readlines(): #readlines()一次性读完整个文件
         total += 1
