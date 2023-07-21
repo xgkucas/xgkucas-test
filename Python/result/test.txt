@@ -1,8 +1,0 @@
-行       	原单词          	改正后            
-4       	castel           	castle         
-4       	helloa           	hello          
-6       	yoursa           	yours          
-7       	helo             	held           
-8       	practiace        	practice       
-9       	zxc              	c              
-9       	asd              	and            
