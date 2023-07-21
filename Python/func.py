@@ -6,7 +6,7 @@ def tokens(text):
     """
     return re.findall('[a-z]+', text.lower())
  
-with open('big.txt', 'r') as f:
+with open('dic/big.txt', 'r') as f:
     WORDS = tokens(f.read())
 WORD_COUNTS = collections.Counter(WORDS)
 
@@ -108,7 +108,7 @@ def detect_En(line_num,text,fname):
         if original_word == correct_word:
             continue
         else:
-            with open('%s.txt'%fname, 'a+', encoding='utf-8') as f:
+            with open('result/%s.txt'%fname, 'a+', encoding='utf-8') as f: #写入文件
                 tplt = "{:<8}\t{:<17}\t{:<15}\n"
                 f.write(tplt.format(line_num, original_word, correct_word))
                 #f.write(tplt.format('第%d行 Orginial word: %s\t Correct word: %s\n' % (line_num, original_word, correct_word)))
@@ -117,15 +117,15 @@ def detect_En(line_num,text,fname):
 
 #定位注释位置
 def count(file,fname):
-    dic = {}
+    #dic = {}
     flag = 0 #标志位
     total = 0 #总行数
     countPound = 0 #注释行数
     countBlank = 0 #空行数
-    if(os.path.isfile('%s.txt'%fname)):
+    if(os.path.isfile('result/%s.txt'%fname)):
         #os.remove() function to remove the file
-        os.remove('%s.txt'%fname)
-    with open('%s.txt'%fname, 'a+', encoding='utf-8') as f:
+        os.remove('result/%s.txt'%fname)
+    with open('result/%s.txt'%fname, 'a+', encoding='utf-8') as f:
         tplt = "{:<8}\t{:<13}\t{:<15}\n"
         f.write(tplt.format('行','原单词', '改正后'))
     line = open(file,'r',encoding='utf-8') #打开文件，因为注释有中文所以使用utf-8编码打开
@@ -140,7 +140,7 @@ def count(file,fname):
         if flag == 0:
             res = re.search("\/\/.*",li) #判断//
             if res:
-                dic[total] = res.group()
+                #dic[total] = res.group()
                 detect_En(total,res.group(),fname)
                 #print(res.group())
                 #print(1)
@@ -148,14 +148,14 @@ def count(file,fname):
             else:
                 res = re.search("\/\*.*",li)  #判断开始/*
                 if res:
-                    dic[total] = res.group()
+                    #dic[total] = res.group()
                     detect_En(total,res.group(),fname)
                     #print(res.group())
                     countPound += 1
                     flag = 1
             
         else:
-            dic[total] = li
+            #dic[total] = li
             detect_En(total,li,fname)
             #print(li)
             countPound += 1
@@ -167,5 +167,24 @@ def count(file,fname):
     # print("countBlank:%d" % countBlank)
     # print("countPound:%d" % countPound)
     print("total:%d" % total)
-    return(dic)
+    #return(dic)
 
+
+def findAllFile(path):
+    for filepath,dirnames,filenames in os.walk(path):
+        for f in filenames:
+            fullname = os.path.join(filepath, f)
+            yield fullname
+
+def find_C_H(path):
+    filname = []
+
+    
+    for i in findAllFile(path):
+        add = []
+        last = i.split("/")[-1].split("\\")[-1].split(".")
+        if last[-1] == "c" or last[-1] == "h":
+            add.append(i)
+            add.append(last[0])
+            filname.append(add)
+    return filname
