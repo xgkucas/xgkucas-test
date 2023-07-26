@@ -1,4 +1,4 @@
-import re, collections,os
+import re, collections, os
 
 def tokens(text):
     """
@@ -102,7 +102,7 @@ def correct_text_generic(text):
 def detect_En(line_num,text,fname):
     if text is None:
         return
-    original_word_list =re.findall("[a-zA-Z]+",text)
+    original_word_list =re.findall(r"\b(?!c\b|h\b|C\b|H\b)[A-Za-z]+(?=\s|\.|\)|/|$)(?!\.c|\.h)\b",text)  
     for original_word in original_word_list:
         correct_word = correct_text_generic(original_word)
         if original_word == correct_word:
@@ -122,10 +122,12 @@ def count(file,fname):
     total = 0 #总行数
     countPound = 0 #注释行数
     countBlank = 0 #空行数
+    absolute_path = os.path.abspath(file)
     if(os.path.isfile('result/%s.txt'%fname)):
         #os.remove() function to remove the file
         os.remove('result/%s.txt'%fname)
     with open('result/%s.txt'%fname, 'a+', encoding='utf-8') as f:
+        f.write("path:  %s\n"%absolute_path)
         tplt = "{:<8}\t{:<13}\t{:<15}\n"
         f.write(tplt.format('行','原单词', '改正后'))
     line = open(file,'r',encoding='utf-8') #打开文件，因为注释有中文所以使用utf-8编码打开
@@ -163,10 +165,10 @@ def count(file,fname):
             if res:
                 flag = 0
       
-
+    # print test
     # print("countBlank:%d" % countBlank)
     # print("countPound:%d" % countPound)
-    print("total:%d" % total)
+    # print("total:%d" % total)
     #return(dic)
 
 
@@ -179,10 +181,10 @@ def findAllFile(path):
 def find_C_H(path):
     filname = []
 
-    
     for i in findAllFile(path):
         add = []
-        last = i.split("/")[-1].split("\\")[-1].split(".")
+        #last = i.split("/")[-1].split("\\")[-1].split(".")
+        last = i.split("\\")[-1].split(".")
         if last[-1] == "c" or last[-1] == "h":
             add.append(i)
             add.append(last[0])
